@@ -1,7 +1,7 @@
 name: symrecipes
 recipe: symfony
 config:
-  webroot: .
+  webroot: ./public
   via: nginx
   php: '8.1'
   database: mariadb:10.4
@@ -19,8 +19,21 @@ services:
   # Container databases
   database:
     portforward: 3310
+    creds:
+      user: symfo_user
+      password: symfo_pass
+      database: symfo_db
 
+  # Container Node
+  node:
+    type: node
+    install_dependencies_as_root:
+      # Upgrade Yarn
+      - "curl -o- -L https://yarnpkg.com/install.sh | bash"
+    install_dependencies_as_me:
+      - "yarn --cwd=$LANDO_MOUNT"
 
+tooling:
   #  NGINX VERSION
   xdebug-on:
     service: appserver
@@ -33,3 +46,28 @@ services:
     description: Disable xdebug for nginx.
     cmd: rm /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && pkill -o -USR2 php-fpm
     user: root
+
+  sf:
+    service: appserver
+    description: Run Symfony console commands
+    cmd: php bin/console
+  diff:
+    service: appserver
+    description: Generate a database migration by comparing your current database to your mapping information
+    cmd: php bin/console doctrine:migrations:diff
+  migrate:
+    service: appserver
+    description: Execute a database migration to a specified version or the latest available version
+    cmd: php bin/console doctrine:migrations:migrate
+  cache:
+    service: appserver
+    description: Clears the Symfony cache
+    cmd: php bin/console cache:clear
+  warmup:
+    service: appserver
+    description: Warms up an empty cache
+    cmd: php bin/console cache:clear
+  yarn:
+    service: node
+    description: Run the Yarn package manager
+    cmd: yarn
