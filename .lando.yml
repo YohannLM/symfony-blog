@@ -46,6 +46,7 @@ tooling:
     cmd: rm /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && pkill -o -USR2 php-fpm
     user: root
 
+# Symfony console
   sf:
     service: appserver
     description: Run Symfony console commands
@@ -62,7 +63,62 @@ tooling:
     service: appserver
     description: Clears the Symfony cache
     cmd: php bin/console cache:clear
+  ## —— 📊 Database ——
+  database-init: ## Init database
+    service: appserver
+    cmd:
+    - php bin/console d:d:d --force --if-exists
+    - php bin/console d:d:d --force --if-exists
+    - php bin/console d:m:m --no-interaction
+    - php bin/console d:f:l --no-interaction
+
+  database-drop: ## Create database
+    service: appserver
+    cmd: php bin/console d:d:d --force --if-exists
+
+  database-create: ## Create database
+    service: appserver
+    cmd: php bin/console d:d:c --if-not-exists
+
+  database-remove: ## Drop database
+    service: appserver
+    cmd: php bin/console d:d:d --force --if-exists
+
+  database-migration: ## Make migration
+    service: appserver
+    cmd: php bin/console make:migration
+
+  database-migrate: ## Migrate migrations
+    service: appserver
+    cmd: php bin/console d:m:m --no-interaction
+
+  database-fixtures-load: ## Load fixtures
+    service: appserver
+    cmd: php bin/console d:f:l --no-interaction
+
+  # Node tooltips
   yarn:
     service: node
     description: Run the Yarn package manager
     cmd: yarn
+
+
+## —— ✅ Test ——
+  tests: ## Run all tests
+    service: appserver
+    cmd:
+      - php bin/console d:d:d --force --if-exists --env=test
+      - php bin/console d:d:c --env=test
+      - php bin/console d:m:m --no-interaction --env=test
+      - php bin/console d:f:l --no-interaction --env=test
+      - php bin/phpunit --testdox tests/Unit/
+      - php bin/phpunit --testdox tests/Functional/
+      - php bin/phpunit --testdox tests/E2E/
+
+  database-init-test: ## Init database for test
+    service: appserver
+    cmd:
+    - php bin/console d:d:d --force --if-exists --env=test
+    - php bin/console d:d:c --env=test
+    - php bin/console d:m:m --no-interaction --env=test
+    - php bin/console d:f:l --no-interaction --env=test
