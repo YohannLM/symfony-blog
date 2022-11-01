@@ -1,10 +1,9 @@
-name: symrecipes
+name: symfony-blog
 recipe: symfony
 config:
   webroot: ./public
   via: nginx
   php: '8.1'
-  database: mariadb:10.4
   xdebug: true
 
 proxy:
@@ -13,16 +12,16 @@ proxy:
   #    - dev.primes-energies.leclerc
   #NGINX
   appserver_nginx:
-    - symrecipes.lndo.site
+    - symblog.lndo.site
 
 services:
   # Container databases
   database:
     portforward: 3310
     creds:
-      user: symfo_user
-      password: symfo_pass
-      database: symfo_db
+      user: symblog_user
+      password: symblog_pass
+      database: symblog_db
 
   # Container Node
   node:
@@ -62,10 +61,6 @@ tooling:
   cache:
     service: appserver
     description: Clears the Symfony cache
-    cmd: php bin/console cache:clear
-  warmup:
-    service: appserver
-    description: Warms up an empty cache
     cmd: php bin/console cache:clear
   yarn:
     service: node

@@ -1,1 +1,1 @@
-# symrecipes
+# Symfony Blog
