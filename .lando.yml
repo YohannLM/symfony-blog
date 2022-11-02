@@ -15,6 +15,12 @@ proxy:
     - symblog.lndo.site
 
 services:
+  appserver:
+    overrides:
+      environment:
+        # Support debugging CLI with XDEBUG.
+        PHP_IDE_CONFIG: "serverName=appserver"
+        XDEBUG_SESSION_START: lando
   # Container databases
   database:
     type: mysql
@@ -24,22 +30,22 @@ services:
       password: symblog_pass
       database: symblog_db
 
-  database_test:
-    type: mysql
-    portforward: 3311
-    creds:
-      user: symblog_test
-      password: symblog_test
-      database: symblog_db_test
+#  database_test:
+#    type: mysql
+#    portforward: 3311
+#    creds:
+#      user: symblog_test
+#      password: symblog_test
+#      database: symblog_db_test
 
   # Container Node
-  node:
-    type: node
-    install_dependencies_as_root:
-      # Upgrade Yarn
-      - "curl -o- -L https://yarnpkg.com/install.sh | bash"
-    install_dependencies_as_me:
-      - "yarn --cwd=$LANDO_MOUNT"
+#  node:
+#    type: node
+#    install_dependencies_as_root:
+#      # Upgrade Yarn
+#      - "curl -o- -L https://yarnpkg.com/install.sh | bash"
+#    install_dependencies_as_me:
+#      - "yarn --cwd=$LANDO_MOUNT"
 
 tooling:
   #  NGINX VERSION
