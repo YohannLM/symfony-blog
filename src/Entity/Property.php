@@ -37,7 +37,7 @@ class Property
     #[ORM\Column]
     private ?int $bedrooms = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: TRUE)]
     private ?int $floor = null;
 
     #[ORM\Column]
