@@ -7,9 +7,6 @@ config:
   xdebug: true
 
 proxy:
-  #APACHE
-  #  appserver:
-  #    - dev.primes-energies.leclerc
   #NGINX
   appserver_nginx:
     - symblog.lndo.site
