@@ -37,7 +37,8 @@ class AdminPropertyController extends AbstractController {
 	}
 	
 	#[Route("/admin/property/create", name: "admin.property.new")]
-	public function new(Request $request): Response {
+	public function new(Request $request): Response
+	{
 		$property = new Property();
 		
 		$form = $this->createForm(PropertyType::class, $property);
@@ -47,6 +48,7 @@ class AdminPropertyController extends AbstractController {
 			// Persist and flush
 			$this->em->persist($property);
 			$this->em->flush();
+			$this->addFlash('success', 'Le bien a été créé.');
 			return $this->redirectToRoute('admin.property.index');
 		}
 		
@@ -57,8 +59,9 @@ class AdminPropertyController extends AbstractController {
 	
 	}
 	
-	#[Route("/admin/property/{id}", name: "admin.property.edit")]
+	#[Route("/admin/property/{id}", name: "admin.property.edit", methods: ["POST", "GET"])]
 	public function edit(Property $property, Request $request): Response
+	
 	{
 		$form = $this->createForm(PropertyType::class, $property);
 		$form->handleRequest($request);
@@ -66,6 +69,8 @@ class AdminPropertyController extends AbstractController {
 		if ($form->isSubmitted() && $form->isValid()) {
 			// Save in db
 			$this->em->flush();
+			// Success message
+			$this->addFlash('success', 'Les modifications ont été sauvegardées.');
 			return $this->redirectToRoute('admin.property.index');
 		}
 		
@@ -73,5 +78,16 @@ class AdminPropertyController extends AbstractController {
 			'property' => $property,
 			'form' => $form
 		]);
+	}
+	
+	#[Route("/admin/property/delete/{id}", name: "admin.property.delete", methods: ["POST"])]
+	public function delete(Property $property, Request $request): Response {
+		
+		if ($this->isCsrfTokenValid('delete'.$property->getId(), $request->get('_token'))) {
+			$this->repository->remove($property, true);
+			$this->addFlash('success', 'Le bien a été supprimé.');
+		}
+		return $this->redirectToRoute("admin.property.index");
+
 	}
 }
