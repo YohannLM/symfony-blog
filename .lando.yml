@@ -93,7 +93,7 @@ tooling:
     service: appserver
     cmd: php bin/console d:d:d --force --if-exists
 
-  database-fixtures-load: ## Load fixtures
+  fixtures: ## Load fixtures
     service: appserver
     cmd: php bin/console d:f:l --no-interaction
 
