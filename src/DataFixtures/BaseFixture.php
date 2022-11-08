@@ -6,6 +6,7 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 use Faker\Generator;
+use Faker\Provider\fr_FR\Address;
 
 abstract class BaseFixture extends Fixture {
 	
@@ -22,7 +23,7 @@ abstract class BaseFixture extends Fixture {
 	 */
 	public function load( ObjectManager $manager ) {
 		$this->manager = $manager;
-		$this->faker = Factory::create();
+		$this->faker = Factory::create('fr_FR');
 		
 		$this->loadData($manager);
 	}
