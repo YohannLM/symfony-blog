@@ -68,7 +68,7 @@ class Property
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $created_at = null;
 
-    #[ORM\ManyToMany(targetEntity: Option::class, mappedBy: 'properties')]
+    #[ORM\ManyToMany(targetEntity: Option::class, inversedBy: 'properties')]
     private Collection $options;
 	
 	/**

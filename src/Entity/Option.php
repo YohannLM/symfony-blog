@@ -19,7 +19,7 @@ class Option
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[ORM\ManyToMany(targetEntity: Property::class, inversedBy: 'options')]
+    #[ORM\ManyToMany(targetEntity: Property::class, mappedBy: 'options')]
     private Collection $properties;
 
     public function __construct()
