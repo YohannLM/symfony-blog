@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\PropertyRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Cocur\Slugify\Slugify;
@@ -15,9 +17,9 @@ class Property
 {
 	
 	const HEAT = [
-		0 => 'Electrique',
-		1 => 'Gaz',
-	];
+                     		0 => 'Electrique',
+                     		1 => 'Gaz',
+                     	];
 	
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -65,18 +67,22 @@ class Property
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $created_at = null;
+
+    #[ORM\ManyToMany(targetEntity: Option::class, mappedBy: 'properties')]
+    private Collection $options;
 	
 	/**
 	 * @param \DateTimeInterface $created_at
 	 */
 	public function __construct( \DateTimeInterface $created_at = new \DateTime()) {
-		$this->created_at = $created_at;
-	}
+                     		$this->created_at = $created_at;
+                       $this->options = new ArrayCollection();
+                     	}
 	
 	public function getId(): ?int
-    {
-        return $this->id;
-    }
+                         {
+                             return $this->id;
+                         }
 
     public function getTitle(): ?string
     {
@@ -91,9 +97,9 @@ class Property
     }
 	
 	public function getSlug(): string
-	{
-		return (new Slugify())->slugify($this->title);
-	}
+                     	{
+                     		return (new Slugify())->slugify($this->title);
+                     	}
 
     public function getDescription(): ?string
     {
@@ -168,9 +174,9 @@ class Property
     }
 	
 	public function getFormattedPrice(): string
-	{
-		return number_format($this->price, 0, '',' ') . ' €';
-	}
+                     	{
+                     		return number_format($this->price, 0, '',' ') . ' €';
+                     	}
 
     public function getHeat(): ?int
     {
@@ -185,9 +191,9 @@ class Property
     }
 	
 	public function getHeatType(): string
-	{
-		return self::HEAT[$this->heat];
-	}
+                     	{
+                     		return self::HEAT[$this->heat];
+                     	}
 
     public function getCity(): ?string
     {
@@ -245,6 +251,33 @@ class Property
     public function setCreatedAt(\DateTimeInterface $created_at): self
     {
         $this->created_at = $created_at;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Option>
+     */
+    public function getOptions(): Collection
+    {
+        return $this->options;
+    }
+
+    public function addOption(Option $option): self
+    {
+        if (!$this->options->contains($option)) {
+            $this->options->add($option);
+            $option->addProperty($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOption(Option $option): self
+    {
+        if ($this->options->removeElement($option)) {
+            $option->removeProperty($this);
+        }
 
         return $this;
     }
