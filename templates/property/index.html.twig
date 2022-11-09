@@ -2,8 +2,48 @@
 
 {% block title 'Agence ImmoPlus | Les biens' %}
 {% block body %}
+    {# Search Bar #}
+    <div class="p-5 bg-light">
+        <div class="container">
+            {{ form_start(form_search) }}
+                {{ form_errors(form_search) }}
+            <div class="row">
+                <div class="col">
+                    {{ form_row(form_search.minSurface) }}
+                </div>
+                <div class="col">
+                    {{ form_row(form_search.maxPrice) }}
+                </div>
+                <div class="col">
+                    <button class="btn btn-primary">Rechercher</button>
+                </div>
+            </div>
+            {{ form_end(form_search) }}
+        </div>
+    </div>
+
+    {# Properties Container #}
     <div class="container mt-4">
         <h1 class="display-4">Voir tous nos biens ! </h1>
+    </div>
+
+
+    <div class="container">
+        {# Properties #}
+        <div class="row row-cols-1 row-cols-md-4 g-4">
+            {% for property in properties %}
+                <div class="col">
+                    {{ include('property/_property_card.html.twig') }}
+                </div>
+            {% endfor %}
+        </div>
+
+        {# Pagination #}
+        <div class="row mt-4">
+            {{ knp_pagination_render(properties, null, {}, {
+                'align': 'center'
+            }) }}
+        </div>
     </div>
 
 {% endblock %}

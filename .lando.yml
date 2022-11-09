@@ -60,6 +60,10 @@ tooling:
     service: appserver
     description: Run Symfony console commands
     cmd: php bin/console
+  make:entity:
+    service: appserver
+    description: Run Symfony console commands
+    cmd: php bin/console make:entity
   diff:
     service: appserver
     description: Generate a database migration by comparing your current database to your mapping information
